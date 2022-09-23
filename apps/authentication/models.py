@@ -1,4 +1,3 @@
-import email
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from apps.authentication.managers import CustomUserManager
@@ -10,6 +9,7 @@ class UserType(models.TextChoices):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
+    username=None
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
     user_type = models.CharField(choices=UserType.choices, max_length=10, default=UserType.TEACHER)
