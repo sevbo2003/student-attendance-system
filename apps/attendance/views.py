@@ -2,7 +2,7 @@ from typing import List
 from rest_framework import viewsets, status, response
 from rest_framework.decorators import action
 from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer
-from apps.attendance.models import Student, Group
+from apps.attendance.models import Student, Group, Subject
 from rest_framework.permissions import IsAdminUser
 
 
@@ -50,3 +50,11 @@ class GroupViewSet(viewsets.ModelViewSet):
         students = Student.objects.filter(group=group)
         serializer = StudentSerializer(students, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def subjects(self, request, pk):
+        group = self.get_object()
+        subjects = Subject.objects.filter(group=group)
+        serializer = SubjectSerializer(subjects, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+        
