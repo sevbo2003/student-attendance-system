@@ -5,21 +5,26 @@ from apps.authentication.models import User
 class Group(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self) -> str:
+        return self.name
 
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
+
+    def __str__(self) -> str:
+        return self.first_name + ' ' + self.last_name + ' - ' + self.group.name
     
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='subjects')
+    group = models.ManyToManyField(Group, related_name='subjects')
 
     def __str__(self) -> str:
-        return self.name + ': ' + self.teacher.first_name + ' ' + self.teacher.last_name + ' - ' + self.group.name
+        return self.name + ': ' + self.teacher.first_name + ' ' + self.teacher.last_name
 
 
 class Satus(models.TextChoices):
@@ -34,6 +39,9 @@ class Attendance(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return self.subject.name + ' - ' + self.date.strftime('%d-%m-%Y')
+
     class Meta:
         ordering = ['-date']
     
@@ -47,3 +55,6 @@ class AttendanceReport(models.Model):
 
     class Meta:
         ordering = ['student__last_name', 'student__first_name']
+
+    def __str__(self) -> str:
+        return self.student.first_name + ' ' + self.student.last_name + ' - ' + self.status + ' - ' + self.attendance.subject.name + ' - ' + self.attendance.date.strftime('%d-%m-%Y')
