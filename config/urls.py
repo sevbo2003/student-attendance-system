@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('apps.authentication.urls')),
-    # path('attendance/', include('apps.attendance.urls')),
+    path('attendance/', include('apps.attendance.urls')),
     path('rest-auth/', include(rest_auth)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
