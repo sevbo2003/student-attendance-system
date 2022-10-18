@@ -7,6 +7,8 @@ from apps.authentication.serializers import UserSerializer, RegisterSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
+from apps.attendance.serializers import GroupSerializer, SubjectSerializer
+from rest_framework.decorators import action
 
 
 class UserViewSet(ModelViewSet):
@@ -22,6 +24,12 @@ class UserViewSet(ModelViewSet):
             queryset = queryset.filter(user_type=user_type)
         return queryset
 
+    @action(detail=True, methods=['get'])
+    def subjects(self, request, pk=None):
+        user = self.get_object()
+        subjects = user.subjects.all()
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response(serializer.data)
 
 class RegisterView(APIView):
     def post(self, request):
