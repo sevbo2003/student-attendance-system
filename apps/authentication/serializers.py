@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.authentication.models import User
+from rest_framework.exceptions import ValidationError
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,6 +16,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
+        user_type = validated_data['user_type']
+        if user_type == 'admin':
+            raise ValidationError({'user_type': 'Admin user cannot be created.'})
         user = User.objects.create_user(
             email=validated_data['email'],
             first_name=validated_data['first_name'],
