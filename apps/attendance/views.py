@@ -3,20 +3,19 @@ from rest_framework import viewsets, status, response
 from rest_framework.decorators import action
 from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer
 from apps.attendance.models import Student, Group, Subject
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    permission_classes = [IsAdminUser]
-    http_method_names: List[str] = ['get', 'post', 'delete']
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        group_id = self.request.query_params.get('group_id') # type: ignore
+        group_id = self.request.query_params.get('group') # type: ignore
         if group_id:
-            queryset = queryset.filter(group__id=group_id)
+            queryset = queryset.filter(group__name=group_id)
         return queryset
 
     @action(methods=['get'], detail=False)
@@ -36,13 +35,7 @@ class StudentViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
-    permission_classes = [IsAdminUser]
-    http_method_names: List[str] = ['get', 'post', 'delete']
-
-    def get_permissions(self):
-        if self.action == 'create':
-            return super().get_permissions()
-        return []
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def students(self, request, pk):
