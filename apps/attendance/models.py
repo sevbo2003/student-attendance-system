@@ -20,11 +20,11 @@ class Student(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subjects')
+    teacher = models.ManyToManyField(User, related_name='subjects')
     group = models.ManyToManyField(Group, related_name='subjects')
 
     def __str__(self) -> str:
-        return self.name + ': ' + self.teacher.first_name + ' ' + self.teacher.last_name
+        return self.name
 
 
 class Satus(models.TextChoices):

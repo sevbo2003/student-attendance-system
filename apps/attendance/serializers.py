@@ -11,9 +11,21 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class SubjectSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
+    teacher = serializers.SerializerMethodField()
     class Meta:
         model = Subject
-        fields = '__all__'
+        fields =['id', 'name','teacher', 'group']
+    
+    def get_teacher(self, obj):
+        teachers = []
+        for teacher in obj.teacher.all():
+            t = {}
+            t['id'] = teacher.id
+            t['name'] = teacher.first_name + teacher.last_name
+            t['email'] = teacher.email
+            teachers.append(t)
+        return teachers   
+    
 
 
 class StudentSerializer(serializers.ModelSerializer):
