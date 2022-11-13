@@ -15,7 +15,6 @@ class StudentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         group_id = self.request.query_params.get('group')
-        print(group_id)
         if group_id:
             queryset = queryset.filter(group__id=group_id)
         return queryset
