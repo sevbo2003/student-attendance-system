@@ -2,7 +2,7 @@ from django.contrib.auth import logout
 from typing import List
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView 
-from apps.authentication.models import User
+from apps.authentication.models import User,UserType
 from apps.authentication.serializers import UserSerializer, RegisterSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
@@ -23,6 +23,20 @@ class UserViewSet(ModelViewSet):
         if user_type is not None:
             queryset = queryset.filter(user_type=user_type)
         return queryset
+
+    @action(detail=True, methods=['get'])
+    def subjects(self, request, pk=None):
+        user = self.get_object()
+        subjects = user.subjects.all()
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response(serializer.data)
+
+
+class TeacherViewSet(ModelViewSet):
+    queryset = User.objects.filter(user_type=UserType.TEACHER)
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+    http_method_names: List[str] = ['get']
 
     @action(detail=True, methods=['get'])
     def subjects(self, request, pk=None):
