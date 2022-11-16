@@ -5,8 +5,10 @@ from apps.authentication.models import User
 
 class IsTeacher(BasePermission):
     def has_permission(self, request, view):
-        if request.user.user_type == User.UserType.TEACHER:
-            return True
+        if request.user.is_authenticated:
+            if request.user.user_type == User.UserType.TEACHER:
+                return True
+            return False
         return False
     
     def has_object_permission(self, request, view, obj):
