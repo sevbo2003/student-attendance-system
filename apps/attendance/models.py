@@ -1,5 +1,6 @@
 from django.db import models
 from apps.authentication.models import User
+import csv
 
 
 class Group(models.Model):
@@ -14,13 +15,27 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
 
+    def fetch_attendance(self):
+        return Attendance.objects.filter(student=self)
+    
+    def load_students_from_csv(self, file):
+        with open('student.csv', 'r') as f:
+            reader = csv.reader(f).decode('utf-8')
+            for row in reader:
+                group = Group.objects.get_or_create(name=row[3])
+                Student.objects.create(first_name=row[0], last_name=row[1], email=row[2], group=group)
+
+    class Meta:
+        verbose_name = 'Student'
+        verbose_name_plural = 'Students'
+
     def __str__(self) -> str:
         return self.first_name + ' ' + self.last_name + ' - ' + self.group.name
     
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
-    teacher = models.ForeignKey(User, related_name='subjects', on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, related_name='subjects', on_delete=models.CASCADE)                
     group = models.ManyToManyField(Group, related_name='subjects')
 
     def __str__(self) -> str:
