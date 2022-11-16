@@ -37,6 +37,7 @@ class Subject(models.Model):
     name = models.CharField(max_length=50)
     teacher = models.ForeignKey(User, related_name='subjects', on_delete=models.CASCADE)                
     group = models.ManyToManyField(Group, related_name='subjects')
+    slug = models.SlugField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
