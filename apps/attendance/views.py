@@ -56,7 +56,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsTeacher]
 
 
 class AttendanceViewSet(viewsets.ModelViewSet):
