@@ -53,8 +53,15 @@ class GroupViewSet(viewsets.ModelViewSet):
 class SubjectViewSet(viewsets.ModelViewSet):
     serializer_class = SubjectSerializer
     queryset = Subject.objects.all()
-    permission_classes = [IsTeacher]
+    http_method_names: List[str] = ['get', 'head', 'options']
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_permissions(self):
+        if self.action == 'list':
+            permission_classes = [IsAuthenticatedOrReadOnly]
+        else:
+            permission_classes = [IsTeacher]
+        return [permission() for permission in permission_classes]
 
 class AttendanceViewSet(viewsets.ModelViewSet):
     serializer_class = AttendanceSerializer
