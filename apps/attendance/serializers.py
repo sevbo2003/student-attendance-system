@@ -11,6 +11,7 @@ class GroupSerializer(serializers.ModelSerializer):
 class SubjectSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
     teacher = serializers.SerializerMethodField()
+
     class Meta:
         model = Subject
         fields =['id', 'name','teacher', 'group']
@@ -24,8 +25,8 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-
     group = GroupSerializer()
+
     class Meta:
         model = Student
         fields = '__all__'
@@ -39,6 +40,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     subject = serializers.SerializerMethodField()
+
     class Meta:
         model = Attendance
         fields = ['id', 'subject', 'date', 'created_at', 'updated_at']
@@ -49,3 +51,15 @@ class AttendanceSerializer(serializers.ModelSerializer):
         subject['id'] = obj.subject.id
         subject['name'] = obj.subject.name
         return subject
+    
+    def create(self, validated_data):
+        subject_id = validated_data['subject_id']
+        date = validated_data['date']
+        if not Subject.objects.filter(id=subject_id).exists():
+            raise serializers.ValidationError("Subject doesn't exist")
+        if Attendance.objects.filter(subject_id=subject_id, date=date).exists():
+            raise serializers.ValidationError("Attendance date already exists")
+        if Subject.objects.get(id=subject_id).teacher != self.context['request'].user:
+            raise serializers.ValidationError("You are not the teacher of this subject")
+        attendance = Attendance.objects.create(**validated_data)
+        return attendance

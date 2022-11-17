@@ -69,4 +69,5 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(subject_id=self.request.data['subject'])
+        if self.request.user.is_authenticated:
+            serializer.save(subject_id=self.request.data['subject'])
