@@ -24,19 +24,28 @@ class StudentViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
+    http_method_names: List[str] = ['get', 'head', 'options']
     permission_classes = [IsAuthenticatedOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def students(self, request, pk):
         group = self.get_object()
         students = Student.objects.filter(group=group)
+        page = self.paginate_queryset(students)
+        if page is not None:
+            serializer = StudentSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = StudentSerializer(students, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['get'])
     def subjects(self, request, pk):
         group = self.get_object()
-        subjects = Subject.objects.filter(group=group)
+        subjects = Subject.objects.filter(group__name=group.name)
+        page = self.paginate_queryset(subjects)
+        if page is not None:
+            serializer = SubjectSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = SubjectSerializer(subjects, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 

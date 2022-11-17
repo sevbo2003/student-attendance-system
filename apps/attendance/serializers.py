@@ -16,14 +16,10 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields =['id', 'name','teacher', 'group']
     
     def get_teacher(self, obj):
-        teachers = []
-        for teacher in obj.teacher.all():
-            t = {}
-            t['id'] = teacher.id
-            t['name'] = teacher.first_name + teacher.last_name
-            t['email'] = teacher.email
-            teachers.append(t)
-        return teachers   
+        return {
+            "id": obj.teacher.id,
+            "name": obj.teacher.first_name + " " + obj.teacher.last_name
+        } 
     
 
 
