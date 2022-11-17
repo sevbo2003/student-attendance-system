@@ -25,6 +25,14 @@ class Student(models.Model):
                 group = Group.objects.get_or_create(name=row[3])
                 Student.objects.create(first_name=row[0], last_name=row[1], email=row[2], group=group)
 
+    @property
+    def get_attendances(self):
+        return self.attendance_reports.all()
+    
+    @property
+    def get_subjects(self):
+        return self.group.subjects.all()
+
     class Meta:
         verbose_name = 'Student'
         verbose_name_plural = 'Students'
