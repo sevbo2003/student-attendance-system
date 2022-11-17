@@ -151,6 +151,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PAGINATION_CLASS": 'apps.attendance.pagination.CustomPagination',
 }
 
 REST_USE_JWT = True

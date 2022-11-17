@@ -20,4 +20,4 @@ class IsTeacher(BasePermission):
                 return obj.teacher == request.user
             if isinstance(obj, Group):
                 return obj.teacher == request.user
-        
+        return False
