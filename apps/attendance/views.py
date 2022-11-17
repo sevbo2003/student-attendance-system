@@ -1,10 +1,10 @@
 from typing import List
 from rest_framework import viewsets, status, response
 from rest_framework.decorators import action
-from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer, AttendanceSerializer
-from apps.attendance.models import Student, Group, Subject, Attendance
+from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer, AttendanceSerializer, AttendanceReportSerializer
+from apps.attendance.models import Student, Group, Subject, Attendance, AttendanceReport
 from apps.attendance.permissions import IsTeacher
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -71,3 +71,14 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
             serializer.save(subject_id=self.request.data['subject'])
+
+
+class AttendanceReportViewSet(viewsets.ModelViewSet):
+    serializer_class = AttendanceReportSerializer
+    queryset = AttendanceReport.objects.all().order_by('-attendance__date')
+    http_method_names: List[str] = ['get', 'put', 'patch', 'head', 'options', 'post']
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(attendance_id=self.request.data['attendance'])

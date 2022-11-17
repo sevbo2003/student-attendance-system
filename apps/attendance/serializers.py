@@ -63,3 +63,40 @@ class AttendanceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You are not the teacher of this subject")
         attendance = Attendance.objects.create(**validated_data)
         return attendance
+
+
+class AttendanceReportSerializer(serializers.ModelSerializer):
+    attendance = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = AttendanceReport
+        fields = ['id', 'attendance', 'student', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+    
+    def get_attendance(self, obj):
+        attendance = {}
+        attendance['id'] = obj.attendance.id
+        attendance['date'] = obj.attendance.date
+        return attendance
+    
+    def create(self, validated_data):
+        attendance_id = validated_data['attendance_id']
+        student = validated_data['student']
+        if not Attendance.objects.filter(id=attendance_id).exists():
+            raise serializers.ValidationError("Attendance doesn't exist")
+        if not Student.objects.filter(id=student.id).exists():
+            raise serializers.ValidationError("Student doesn't exist")
+        if AttendanceReport.objects.filter(attendance_id=attendance_id, student_id=student.id).exists():
+            raise serializers.ValidationError("Attendance already taken")
+        if Attendance.objects.get(id=attendance_id).subject.teacher != self.context['request'].user:
+            raise serializers.ValidationError("You are not the teacher of this subject")
+        x = Attendance.objects.get(id=attendance_id).subject.group.all()
+        if student.group not in x:
+            raise serializers.ValidationError("Student doesn't belong to this group")
+        attendance_report = AttendanceReport.objects.create(**validated_data)
+        return attendance_report
+    
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
