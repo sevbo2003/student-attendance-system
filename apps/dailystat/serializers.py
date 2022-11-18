@@ -21,7 +21,7 @@ class DailyAttendanceStatSerializer(serializers.ModelSerializer):
         return [
             {
                 "id": i.id,
-                "name": i.name,
+                "name": i.name.split('(')[0].rstrip(),
             }
             for i in obj.subjects.all()
         ]
