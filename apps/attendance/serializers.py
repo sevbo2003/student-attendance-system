@@ -14,7 +14,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subject
-        fields =['id', 'name','teacher', 'group']
+        fields =['id', 'name','teacher', 'group', 'slug']
     
     def get_teacher(self, obj):
         return {
