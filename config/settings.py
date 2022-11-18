@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Local apps
     'apps.attendance.apps.AttendanceConfig',
     'apps.authentication.apps.AuthenticationConfig',
+    'apps.dailystat.apps.DailystatConfig',
 
 ]
 
