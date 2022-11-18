@@ -1,7 +1,5 @@
 from django_filters import rest_framework as filters
 from apps.dailystat.models import DailyAttendanceStat
-from apps.attendance.models import Subject, Student
-from apps.attendance.models import AttendanceReport, Satus, Subject
 from django.db.models import Q
 
 
