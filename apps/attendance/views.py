@@ -11,7 +11,6 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
     http_method_names: List[str] = ['get', 'head', 'options']
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -19,6 +18,17 @@ class StudentViewSet(viewsets.ModelViewSet):
         if group_name:
             queryset = queryset.filter(group__name=group_name)
         return queryset
+    
+    @action(detail=True, methods=['get'])
+    def attendances(self, request, pk=None):
+        student = self.get_object()
+        attendances = student.get_attendances
+        page = self.paginate_queryset(attendances)
+        if page is not None:
+            serializer = AttendanceReportSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = AttendanceReportSerializer(attendances, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GroupViewSet(viewsets.ModelViewSet):

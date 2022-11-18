@@ -77,6 +77,10 @@ class AttendanceReportSerializer(serializers.ModelSerializer):
         attendance = {}
         attendance['id'] = obj.attendance.id
         attendance['date'] = obj.attendance.date
+        attendance['subject'] = {
+            'id': obj.attendance.subject.id,
+            'name': obj.attendance.subject.name
+        }
         return attendance
     
     def create(self, validated_data):
