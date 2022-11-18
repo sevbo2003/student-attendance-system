@@ -4,3 +4,4 @@ djangorestframework-simplejwt==5.2.0
 python-dotenv==0.21.0
 django-filter==22.1
 psycopg2-binary==2.9.3
+django-cors-headers==3.13.0
