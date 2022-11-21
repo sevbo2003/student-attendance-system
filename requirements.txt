@@ -5,3 +5,5 @@ python-dotenv==0.21.0
 django-filter==22.1
 psycopg2-binary==2.9.3
 django-cors-headers==3.13.0
+celery==5.2.7
+django-celery-beat==2.4.0
