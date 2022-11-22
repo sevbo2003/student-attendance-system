@@ -23,13 +23,13 @@
 
 <div align="center">
 
-**[ABOUT PROJECT]() • 
-[TECH STACK]() • 
-[GETTING STARTED]() • 
-[INSTALLATION]() • 
-[USAGE]() • 
-[CONTRIBUTING]() • 
-[LICENSE]()**
+**[ABOUT PROJECT](https://github.com/sevbo2003/student-attendance-system#what-does-this-application-do--) • 
+[TECH STACK](https://github.com/sevbo2003/student-attendance-system#built-with) • 
+[GETTING STARTED](https://github.com/sevbo2003/student-attendance-system#getting-started) • 
+[INSTALLATION](https://github.com/sevbo2003/student-attendance-system#installation) • 
+[USAGE](https://github.com/sevbo2003/student-attendance-system#usage) • 
+[CONTRIBUTING](https://github.com/sevbo2003/student-attendance-system#contributing) • 
+[LICENSE](https://github.com/sevbo2003/student-attendance-system#license)**
 
 </div>
 
