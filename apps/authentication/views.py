@@ -36,14 +36,42 @@ class TeacherViewSet(ModelViewSet):
     queryset = User.objects.filter(user_type=UserType.TEACHER)
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
-    http_method_names: List[str] = ['get']
+    http_method_names: List[str] = ['get', 'post']
 
     @action(detail=True, methods=['get'])
     def subjects(self, request, pk=None):
-        user = self.get_object()
-        subjects = user.subjects.all()
-        serializer = SubjectSerializer(subjects, many=True)
+        page = self.paginate_queryset(self.get_object().subjects.all())
+        serializer = SubjectSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def me(self, request, *args, **kwargs):
+        print(**kwargs)
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'])
+    def update_password(self, request):
+        if request.user.is_authenticated:
+            user = request.user
+            old_password = request.data.get('old_password')
+            new_password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+
+            if new_password != confirm_password:
+                return Response({'detail': 'Password does not match.'}, status=status.HTTP_400_BAD_REQUEST)
+            if not user.check_password(old_password):
+                return Response({'detail': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(new_password)
+            user.save()
+            return Response({"detail": "Password successfully updated"}, status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.action == 'update_password':
+            return []
+        else:
+            return super().get_permissions()
+
 
 class RegisterView(APIView):
     def post(self, request):
