@@ -4,10 +4,14 @@ from django.conf import settings
 from rest_framework import urls as rest_auth
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Student Attendance System API')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', schema_view),
     path('accounts/', include('apps.authentication.urls')),
     path('attendance/', include('apps.attendance.urls')),
     path('dailystat/', include('apps.dailystat.urls')),

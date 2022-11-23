@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'django_celery_beat',
+    'rest_framework_swagger',
     
     # Local apps
     'apps.attendance.apps.AttendanceConfig',
@@ -72,6 +73,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries' : {
+                'staticfiles': 'django.templatetags.static', 
+            }
         },
     },
 ]
@@ -138,6 +142,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = ['staticfiles']
 STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
@@ -158,6 +163,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": 'apps.attendance.pagination.CustomPagination',
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
 REST_USE_JWT = True
