@@ -1,6 +1,5 @@
 from typing import List
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.views import APIView 
 from apps.authentication.models import User,UserType
 from apps.authentication.serializers import UserSerializer, RegisterSerializer
 from rest_framework.permissions import IsAdminUser
@@ -8,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from apps.attendance.serializers import GroupSerializer, SubjectSerializer
 from rest_framework.decorators import action
-from django.http import HttpResponse
 
 
 class UserViewSet(ModelViewSet):
@@ -71,8 +69,3 @@ class TeacherViewSet(ModelViewSet):
             return []
         else:
             return super().get_permissions()
-
-            
-class DashboardCheckView(APIView):
-    def get(self, request):
-        return Response({"status": f"{HttpResponse.status_code}"})
