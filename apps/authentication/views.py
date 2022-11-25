@@ -44,8 +44,11 @@ class TeacherViewSet(ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def me(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+        if request.user.is_authenticated:
+            serializer = UserSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     @action(detail=False, methods=['post'])
     def update_password(self, request):
