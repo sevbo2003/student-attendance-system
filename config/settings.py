@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_filters',
     'django_celery_beat',
     'rest_framework_swagger',
+    "debug_toolbar",
     
     # Local apps
     'apps.attendance.apps.AttendanceConfig',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -194,3 +196,10 @@ else:
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
     CELERY_TIMEZONE = 'Asia/Tashkent'
     CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

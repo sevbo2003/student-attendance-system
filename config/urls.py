@@ -13,6 +13,7 @@ schema_view = get_swagger_view(title='Student Attendance System API')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', schema_view),
+    path('__debug__/', include('debug_toolbar.urls')),
     path('accounts/', include('apps.authentication.urls')),
     path('attendance/', include('apps.attendance.urls')),
     path('dailystat/', include('apps.dailystat.urls')),
