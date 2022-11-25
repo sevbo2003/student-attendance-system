@@ -43,8 +43,7 @@ class TeacherViewSet(ModelViewSet):
         return self.get_paginated_response(serializer.data)
     
     @action(detail=False, methods=['get'])
-    def me(self, request, *args, **kwargs):
-        print(**kwargs)
+    def me(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
     
@@ -65,7 +64,7 @@ class TeacherViewSet(ModelViewSet):
             return Response({"detail": "Password successfully updated"}, status=status.HTTP_200_OK)
     
     def get_permissions(self):
-        if self.action == 'update_password':
+        if self.action in ['update_password', 'me']:
             return []
         else:
             return super().get_permissions()
