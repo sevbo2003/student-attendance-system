@@ -15,9 +15,9 @@ class DailyAttendanceStatViewSet(viewsets.ModelViewSet):
     filterset_class = DailyAttendanceStatFilter
     filter_backends = [DjangoFilterBackend]
 
-    @method_decorator(cache_page(timeout=60*60*0.3))
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    # @method_decorator(cache_page(timeout=60*60*0.3))
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
             try:
