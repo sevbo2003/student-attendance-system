@@ -11,18 +11,11 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
     http_method_names: List[str] = ['get', 'head', 'options']
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        group_name = self.request.query_params.get('group')
-        if group_name:
-            queryset = queryset.filter(group__name=group_name)
-        return queryset
     
     @action(detail=True, methods=['get'])
     def attendances(self, request, pk=None):
         student = self.get_object()
-        attendances = student.get_attendances
+        attendances = student.get_absents_and_lates
         page = self.paginate_queryset(attendances)
         if page is not None:
             serializer = AttendanceReportSerializer(page, many=True)

@@ -30,6 +30,10 @@ class Student(models.Model):
         return self.attendance_reports.all()
     
     @property
+    def get_absents_and_lates(self):
+        return self.attendance_reports.filter(models.Q(status='absent') | models.Q(status='late'))
+    
+    @property
     def get_subjects(self):
         return self.group.subjects.all()
 
