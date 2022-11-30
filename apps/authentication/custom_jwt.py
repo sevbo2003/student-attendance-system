@@ -17,6 +17,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                     refresh = self.get_token(user)
                     data['access'] = str(refresh.access_token)
                     data['refresh'] = str(refresh)
+                    user_info = {
+                        'id': user.id,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name
+                    }
+                    data['user'] = user_info
                     return data
                 else:
                     raise ValidationError({'detail': 'Email or password is incorrect'})
