@@ -12,7 +12,12 @@ class IsTeacher(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_authenticated:
             if request.user.user_type in [UserType.TEACHER, UserType.ADMIN]:
-                if Subject.objects.get(id=obj.id).teacher == request.user:
+                if request.user.user_type == UserType.TEACHER:
+                    if request.user == obj:
+                        return True
+                    else:
+                        return False
+                else:
                     return True
             return False
         return False

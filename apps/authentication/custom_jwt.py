@@ -8,7 +8,6 @@ from apps.authentication.models import User
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         email = attrs.get('email')
-        print(email)
         password = attrs.get('password')
         user = User.objects.filter(email=email).first()
         if isValid(email=email):

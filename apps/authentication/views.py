@@ -1,7 +1,8 @@
 from typing import List
 from rest_framework.viewsets import ModelViewSet
 from apps.authentication.models import User,UserType
-from apps.authentication.serializers import UserSerializer, RegisterSerializer
+from apps.attendance.permissions import IsTeacher
+from apps.authentication.serializers import UserSerializer
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,7 +14,7 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
-    http_method_names: List[str] = ['get']
+    http_method_names: List[str] = ['get', 'head', 'options']
 
     def get_queryset(self):
         queryset = User.objects.all()
@@ -28,6 +29,11 @@ class UserViewSet(ModelViewSet):
         subjects = user.subjects.all()
         serializer = SubjectSerializer(subjects, many=True)
         return Response(serializer.data)
+    
+    def get_permissions(self):
+        if self.action == 'subjects':
+            self.permission_classes = [IsAuthenticated, IsTeacher]
+        return super().get_permissions()
 
 
 class TeacherViewSet(ModelViewSet):
