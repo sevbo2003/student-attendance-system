@@ -62,7 +62,19 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class AttendanceViewSet(viewsets.ModelViewSet):
     serializer_class = AttendanceSerializer
     queryset = Attendance.objects.all().order_by('-date')
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
+    http_method_names: List[str] = ['get', 'head', 'options', 'post']
+
+    @action(detail=True, methods=['get'])
+    def reports(self, request, pk):
+        attendance = self.get_object()
+        queryset = attendance.reports.all()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = AttendanceReportSerializer(queryset, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = AttendanceReportSerializer(queryset, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:

@@ -72,7 +72,7 @@ class TeacherViewSet(ModelViewSet):
             return Response({"detail": "Password successfully updated"}, status=status.HTTP_200_OK)
     
     def get_permissions(self):
-        if self.action in ['update_password', 'me']:
+        if self.action in ['update_password', 'me', 'subjects']:
             self.permission_classes = [IsTeacher]
         return super().get_permissions()
     
