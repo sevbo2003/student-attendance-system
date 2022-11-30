@@ -28,7 +28,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     queryset = Group.objects.all()
     http_method_names: List[str] = ['get', 'head', 'options']
-    permission_classes = [IsAuthenticatedOrReadOnly]
     
     @action(detail=True, methods=['get'])
     def students(self, request, pk):
