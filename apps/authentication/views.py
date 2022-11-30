@@ -16,13 +16,6 @@ class UserViewSet(ModelViewSet):
     permission_classes = [IsAdminUser]
     http_method_names: List[str] = ['get', 'head', 'options']
 
-    def get_queryset(self):
-        queryset = User.objects.all()
-        user_type = self.request.query_params.get('user_type', None)  # type: ignore
-        if user_type is not None:
-            queryset = queryset.filter(user_type=user_type)
-        return queryset
-
     @action(detail=True, methods=['get'])
     def subjects(self, request, pk=None):
         user = self.get_object()
@@ -39,14 +32,20 @@ class UserViewSet(ModelViewSet):
 class TeacherViewSet(ModelViewSet):
     queryset = User.objects.filter(user_type=UserType.TEACHER)
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-    http_method_names: List[str] = ['get', 'post']
+    permission_classes = [IsAdminUser]
+    http_method_names: List[str] = ['get','post', 'head', 'options']
+
+    def create(self, request, *args, **kwargs):
+        if self.action == 'update_password':
+            return super().create(request, *args, **kwargs)
+        return Response({"detail": "You do not have permission to do this  operations"})
 
     @action(detail=True, methods=['get'])
     def subjects(self, request, pk=None):
-        page = self.paginate_queryset(self.get_object().subjects.all())
-        serializer = SubjectSerializer(page, many=True)
-        return self.get_paginated_response(serializer.data)
+        user = self.get_object()
+        subjects = user.subjects.all()
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def me(self, request):
@@ -74,6 +73,6 @@ class TeacherViewSet(ModelViewSet):
     
     def get_permissions(self):
         if self.action in ['update_password', 'me']:
-            return [IsAuthenticated()]
-        else:
-            return [IsAdminUser()]
+            self.permission_classes = [IsTeacher]
+        return super().get_permissions()
+    
