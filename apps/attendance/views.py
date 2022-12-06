@@ -80,6 +80,22 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         serializer = AttendanceReportSerializer(queryset, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def date(self, request):
+        day = request.GET.get('day')
+        if day:
+            day = day.split('-')
+            attendance = Attendance.objects.filter(
+                subject__teacher = request.user,
+                date__year = int(day[0]),
+                date__month = int(day[1]),
+                date__day = int(day[2])
+            )
+            if attendance:
+                return response.Response([{'subject_id': i.subject.id, 'attendance_id': i.id} for i in attendance])
+            return response.Response({'detail': 'Attendance not found'})
+        return response.Response({'detail': 'Attendance not found'})
+
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
             serializer.save(subject_id=self.request.data['subject'])
