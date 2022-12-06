@@ -68,7 +68,11 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def reports(self, request, pk):
         attendance = self.get_object()
-        queryset = attendance.reports.all()
+        gorup = request.GET.get('group')
+        if gorup is not None:
+            queryset = attendance.reports.filter(student__group__name=gorup)
+        else:
+            queryset = attendance.reports.all()
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = AttendanceReportSerializer(queryset, many=True)

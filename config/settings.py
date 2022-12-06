@@ -184,13 +184,13 @@ else:
     CORS_ORIGIN_ALLOW_ALL = False
     CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split(' ')
 
+CELERY_TIMEZONE = 'Asia/Tashkent'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 if DEBUG:
     CELERY_BROKER_URL = 'redis://localhost:6379'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-    CELERY_TIMEZONE = 'Asia/Tashkent'
 else:
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
     CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
-    CELERY_TIMEZONE = 'Asia/Tashkent'
-    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
