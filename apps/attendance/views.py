@@ -68,9 +68,14 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def reports(self, request, pk):
         attendance = self.get_object()
-        gorup = request.GET.get('group')
-        if gorup is not None:
-            queryset = attendance.reports.filter(student__group__name=gorup)
+        guruh = request.GET.get('group')
+        fan = request.GET.get('fan')
+        if guruh is not None and fan is not None:
+            queryset = attendance.reports.filter(student__group__id=guruh, attendance__subject__id=fan)
+        elif guruh is not None:
+            queryset = attendance.reports.filter(student__group__id=guruh)
+        elif fan is not None:
+            queryset = attendance.reports.filter(attendance__subject__id=fan)
         else:
             queryset = attendance.reports.all()
         page = self.paginate_queryset(queryset)
