@@ -1,13 +1,16 @@
 from django.db import models
 from apps.authentication.models import User
 import csv
-
+import json
 
 class Group(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
+    
+    class Meta:
+        ordering = ['name']
 
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
@@ -24,6 +27,12 @@ class Student(models.Model):
             for row in reader:
                 group = Group.objects.get_or_create(name=row[3])
                 Student.objects.create(first_name=row[0], last_name=row[1], email=row[2], group=group)
+
+    def load_students_from_json(self):
+        with open('ajou.json', 'r') as f:
+            for i in json.load(f):
+                group = Group.objects.get(name=i['group'])
+                Student.objects.create(first_name=i['full_name'].split()[1], last_name=i['full_name'].split()[0], email=(str(i['full_id'])+"@ajou.uz"), group=group)
 
     @property
     def get_attendances(self):
