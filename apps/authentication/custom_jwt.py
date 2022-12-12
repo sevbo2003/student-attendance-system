@@ -20,7 +20,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                     user_info = {
                         'id': user.id,
                         'first_name': user.first_name,
-                        'last_name': user.last_name
+                        'last_name': user.last_name,
+                        'user_type': user.user_type,
                     }
                     data['user'] = user_info
                     return data
