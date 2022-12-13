@@ -1,7 +1,7 @@
 from typing import List
 from rest_framework import viewsets, status, response
 from rest_framework.decorators import action
-from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer, AttendanceSerializer, AttendanceReportSerializer
+from apps.attendance.serializers import StudentSerializer, GroupSerializer, SubjectSerializer, AttendanceSerializer, AttendanceReportSerializer, AttendanceReportViewSerializer
 from apps.attendance.models import Student, Group, Subject, Attendance, AttendanceReport
 from apps.attendance.permissions import IsTeacher
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
@@ -23,9 +23,9 @@ class StudentViewSet(viewsets.ModelViewSet):
             attendances = attendances.all()
         page = self.paginate_queryset(attendances)
         if page is not None:
-            serializer = AttendanceReportSerializer(page, many=True)
+            serializer = AttendanceReportViewSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        serializer = AttendanceReportSerializer(attendances, many=True)
+        serializer = AttendanceReportViewSerializer(attendances, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
 

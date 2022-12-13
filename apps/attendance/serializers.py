@@ -67,7 +67,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 class AttendanceReportSerializer(serializers.ModelSerializer):
     attendance = serializers.SerializerMethodField()
-    student = StudentSerializer()
     
     class Meta:
         model = AttendanceReport
@@ -105,3 +104,23 @@ class AttendanceReportSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get('status', instance.status)
         instance.save()
         return instance
+
+
+class AttendanceReportViewSerializer(serializers.ModelSerializer):
+    attendance = serializers.SerializerMethodField()
+    student = StudentSerializer()
+    
+    class Meta:
+        model = AttendanceReport
+        fields = ['id', 'attendance', 'student', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+    
+    def get_attendance(self, obj):
+        attendance = {}
+        attendance['id'] = obj.attendance.id
+        attendance['date'] = obj.attendance.date
+        attendance['subject'] = {
+            'id': obj.attendance.subject.id,
+            'name': obj.attendance.subject.name
+        }
+        return attendance
