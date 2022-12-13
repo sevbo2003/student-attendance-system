@@ -15,7 +15,12 @@ class StudentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def attendances(self, request, pk=None):
         student = self.get_object()
-        attendances = student.get_absents_and_lates
+        attendances = student.attendance_reports.all()
+        status = request.query_params.get('status', None)
+        if status is not None:
+            attendances = attendances.filter(status=status)
+        else:
+            attendances = attendances.all()
         page = self.paginate_queryset(attendances)
         if page is not None:
             serializer = AttendanceReportSerializer(page, many=True)
