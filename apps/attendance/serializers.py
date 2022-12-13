@@ -67,6 +67,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 class AttendanceReportSerializer(serializers.ModelSerializer):
     attendance = serializers.SerializerMethodField()
+    student = StudentSerializer()
     
     class Meta:
         model = AttendanceReport
